@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Estimator</title>
+</head>
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+hr {
+    width: 20px auto;
+}
+
+input[type=number] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 30px;
+    margin: 8px 0;
+    border: 3px solid #ccc;
+    transition:border 0.5s;
+    outline:none
+}
+input[type=number]:focus {
+    border:3px solid #555;
+}
+button[type=submit] {
+    background-color: #04AA6D;
+    border:none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+}
+button[type=submit]:hover {
+    background-color: #45a049;
+}
+button[type=button] {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+}
+button[type=button]:hover {
+    background-color: #f94449;
+}
+
+.form-bg {
+    border-radius: 10px;
+    padding: 30px;
+    background-color: #f2f2f2;
+    box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    width: 100%;
+    max-width: 600px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: black;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.button-container button {
+    margin: 0 10px;
+}
+
+.result {
+    text-align: center;
+    color: black;
+    padding: 20px;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.result .price {
+    font-size: 1.5em;
+    color: #04AA6D;
+}
+
+</style>
+<body>
+    <h1 style="text-align: center; color: #333;">House Price Estimator</h1>
+    <hr>
+    <div class="form-bg">
+        <form method="POST" id="input_form">
+            <label for="sqft">Square Feet:</label>
+            <input type="number" id="sqft" name="sqft" required>
+            <br>
+            <label for="NumBeds">Number of Bedrooms:</label>
+            <input type="number" id="NumBeds" name="NumBeds" required>
+            <br>
+            <label for="NumBaths">Number of Bathrooms:</label>
+            <input type="number" id="NumBaths" name="NumBaths" step="0.1" required>
+            <br>
+            <label for="lotSize">Lot Size in Acres:</label>
+            <input type="number" id="lotSize" name="lotSize" step="0.01" required>
+            <br>
+            <label for="age">Age in years:</label>
+            <input type="number" id="age" name="age" required>
+            <br>
+            <div class="button-container">
+                <button type="submit" form="input_form" value="submit">Submit</button>
+                <button type="button" onclick="window.location.href='{{ url_for('reset') }}'">Reset</button>
+            </div>
+        </form>
+    <div class="result">
+        {% if price is not none %}
+            <h2>The estimated price is:</h2>
+            <h2 class ="price">${{ price }}</h2>
+        {% else %}
+            <h2 style="text-align: center;">Please fill in the form to recieve an estimate</h2>
+        {% endif %}
+    </div>
+</body>
+</html>
