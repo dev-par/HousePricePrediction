@@ -5,6 +5,10 @@
 import copy, math
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 np.set_printoptions(precision=2)
 
 """
@@ -167,10 +171,33 @@ data = np.loadtxt(file_path)
 x_train = data[:, :5]
 y_train = data[:, 5]
 
+x = data[:, :5]
+y = data[:, 5]
     
 def main():
+    # using sklearn
+    sk_x_train, x_test, sk_y_train, y_test = train_test_split(x, y, test_size=0.2,random_state=42)
 
+    scaler = MinMaxScaler()
+    sk_x_train = scaler.fit_transform(sk_x_train)
+    x_test = scaler.transform(x_test)
 
+    model = LinearRegression()
+    model.fit(sk_x_train, sk_y_train)
+
+    y_pred = model.predict(x_test)
+
+    """
+    plt.scatter(y_test, y_pred, c='blue')
+    plt.xlabel("Actual Prices")
+    plt.ylabel("Predicted Prices")
+    plt.title("Actual vs Predicted Prices")
+    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')  # Ideal line
+    plt.show()
+    """
+
+    # using my functions
+    
     w = np.array([0,0,0,0,0])
     b = 0
     alpha = .3
@@ -178,10 +205,25 @@ def main():
     normalized_x_train = normalize_x_data(x_train)
 
     w, b, cost_history = gradient_descent(normalized_x_train, y_train, w, b, cost_function, alpha, iters, compute_gradient)
+    normalized_x_test = normalize_x_data(x_test)
+    y_pred_custom = np.dot(normalized_x_test, w) + b
 
+    """
     plot_cost_vs_iter(cost_history)
     prediction_by_feature(normalized_x_train, y_train, w, b)
     prediction(np.array([2578, 4, 3, .22, 24]), w, b, x_train)
+    """
 
+    # comparing results
+    mse = mean_squared_error(y_test, y_pred)
+    print(f"Mean Squared Error (sklearn model): {mse:.2f}")
+
+    mse_custom = mean_squared_error(y_test, y_pred_custom)
+    print(f"Mean squared error (custom model): {mse_custom:.2f}")
+
+    difference = abs(((mse - mse_custom) / mse_custom) * 100)
+    print(f"Difference = {difference}")
+    print(f"The sklearn model is {difference:.2f}% more effective than the custom model")
+    
 if __name__ == "__main__":
     main()
